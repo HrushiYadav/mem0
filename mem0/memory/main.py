@@ -1132,7 +1132,7 @@ class Memory(MemoryBase):
                             payload = match.payload or {}
                             existing_type = payload.get("entity_type")
                             if entity_type and existing_type and existing_type != entity_type:
-                                matched = False
+                                pass
                             else:
                                 matched = True
                                 linked = set(payload.get("linked_memory_ids", []))
@@ -2780,7 +2780,7 @@ class AsyncMemory(MemoryBase):
                             payload = match.payload or {}
                             existing_type = payload.get("entity_type")
                             if entity_type and existing_type and existing_type != entity_type:
-                                matched = False
+                                pass
                             else:
                                 matched = True
                                 linked = set(payload.get("linked_memory_ids", []))
