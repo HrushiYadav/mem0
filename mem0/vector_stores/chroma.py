@@ -293,8 +293,14 @@ class ChromaDB(VectorStoreBase):
                         # ChromaDB doesn't support contains, fallback to equality
                         chroma_condition[key] = {"$eq": val}
                     else:
-                        # Unknown operator, treat as equality
-                        chroma_condition[key] = {"$eq": val}
+                        # Fail fast on unknown operators instead of silently
+                        # downgrading to equality, which returns wrong results
+                        # without any signal to the caller.
+                        raise ValueError(
+                            f"Unsupported filter operator {op!r} for field {key!r}. "
+                            "Supported operators: eq, ne, gt, gte, lt, lte, in, nin, "
+                            "contains, icontains."
+                        )
                 return chroma_condition
             else:
                 # Simple equality

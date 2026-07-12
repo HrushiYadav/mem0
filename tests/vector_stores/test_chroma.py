@@ -286,10 +286,20 @@ def test_generate_where_clause_non_string_values():
     """Test _generate_where_clause with non-string values."""
     filters = {"user_id": "alice", "count": 5, "active": True}
     result = ChromaDB._generate_where_clause(filters)
-    
+
     # ChromaDB accepts non-string values in filters
     expected = {"$and": [{"user_id": {"$eq": "alice"}}, {"count": {"$eq": 5}}, {"active": {"$eq": True}}]}
     assert result == expected
+
+
+def test_generate_where_clause_unknown_operator_raises():
+    """An unsupported operator must raise instead of silently becoming equality.
+
+    Previously an unknown operator (e.g. a typo like ``betwen``) was downgraded
+    to ``$eq``, returning wrong results with no signal to the caller.
+    """
+    with pytest.raises(ValueError, match="Unsupported filter operator"):
+        ChromaDB._generate_where_clause({"age": {"betwen": [10, 20]}})
 
 
 def test_generate_where_clause_not_single_equality():
